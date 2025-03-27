@@ -1,20 +1,7 @@
 name: Pull Request Check
 
 on:
-  pull_request:
-    branches:
-      - main
-      - 'release/**'
   push:
-    branches:
-      - main
-      - 'release/**'
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to run the workflow on'
-        required: true
-        default: 'main'
       
 defaults:
   run:
@@ -26,21 +13,18 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        submodules: recursive
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Restore packages
-      shell: pwsh
-      run: msbuild -m /t:Restore
-
-    - name: Build apps
-      shell: pwsh
-      run: msbuild -m /p:Configuration=Release
+    - name: Setup dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0
+    
+    - name: Build project
+      run: dotnet build HunterPie --configuration Release --runtime win-x64 --nologo -v q --property WarningLevel=0 /clp:ErrorsOnly
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
