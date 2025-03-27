@@ -40,4 +40,10 @@ jobs:
 
     - name: Build apps
       shell: pwsh
-      run: msbuild -m /p:Configuration=Debug
+      run: msbuild -m /p:Configuration=Release
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: compiled-binaries
+        path: HunterPie/bin/Release/
