@@ -6,9 +6,6 @@ on:
       - main
       - 'release/**'
   push:
-    branches:
-      - main
-      - 'release/**'
       
 defaults:
   run:
@@ -37,3 +34,9 @@ jobs:
 
     - name: Run formatter
       run: dotnet format --verify-no-changes
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: compiled-binaries
+        path: HunterPie/bin/Release/
